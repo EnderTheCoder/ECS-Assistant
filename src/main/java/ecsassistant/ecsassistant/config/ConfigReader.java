@@ -13,4 +13,8 @@ public class ConfigReader {
     public int getFlyCostsStart() {
         return config.getInt("FlyCostsStart");
     }
+
+    public double getTeleportCosts() {
+        return config.getDouble("TeleportCosts");
+    }
 }

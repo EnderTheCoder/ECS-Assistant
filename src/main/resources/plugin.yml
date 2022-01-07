@@ -13,7 +13,21 @@ commands:
     description: A command that let user to fly.
     permission: ecs.flyx
     permission-message: You need to have the permission to use this command. Please contact your server OP.
+  tpx:
+    description: A command that enable user to teleport.
+    permission: ecs.tpx
+    permission-message: You need to have the permission to use this command. Please contact your server OP.
+  ecsadmin:
+    description: A command designed for op in ECS.
+    permission: ecs.admin
+    permission-message: You need to have the permission to use this command. Please contact your server OP.
 permissions:
   ecs.flyx:
     description: fly
     default: true
+  ecs.tpx:
+    description: tp
+    default: true
+  ecs.admin:
+    description: admin
+    default: op

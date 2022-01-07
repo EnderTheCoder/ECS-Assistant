@@ -1,6 +1,8 @@
 package ecsassistant.ecsassistant;
 
+import ecsassistant.ecsassistant.commander.AdminCommander;
 import ecsassistant.ecsassistant.commander.FlyCommander;
+import ecsassistant.ecsassistant.commander.TeleportCommander;
 import ecsassistant.ecsassistant.money.Vault;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,6 +19,12 @@ public final class ECSAssistant extends JavaPlugin {
 
         if (Bukkit.getPluginCommand("flyx") != null) {
             Bukkit.getPluginCommand("flyx").setExecutor(new FlyCommander());
+        }
+        if (Bukkit.getPluginCommand("tpx") != null) {
+            Bukkit.getPluginCommand("tpx").setExecutor(new TeleportCommander());
+        }
+        if (Bukkit.getPluginCommand("ecsadmin") != null) {
+            Bukkit.getPluginCommand("ecsadmin").setExecutor(new AdminCommander());
         }
     }
 

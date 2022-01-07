@@ -1,2 +1,5 @@
 FlyCostsPerMin: 50
+
 FlyCostsStart: 100
+
+TeleportCosts: 0.5

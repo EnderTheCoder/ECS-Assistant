@@ -6,6 +6,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class Vault {
@@ -40,11 +41,11 @@ public class Vault {
     }
 
     public static void addVaultCurrency(UUID user, double amount) {
-        econ.depositPlayer(Bukkit.getOfflinePlayer(user), amount);
+        econ.depositPlayer(Bukkit.getOfflinePlayer(user), curtate(amount));
     }
 
     public static void subtractCurrency(UUID user, double amount) {
-        econ.withdrawPlayer(Bukkit.getOfflinePlayer(user), amount);
+        econ.withdrawPlayer(Bukkit.getOfflinePlayer(user), curtate(amount));
     }
 
     public static void setCurrency(UUID user, double amount) {
@@ -88,4 +89,8 @@ public class Vault {
         return perms != null;
     }
 
+    public static double curtate(double input) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return Double.parseDouble(df.format(input));
+    }
 }
