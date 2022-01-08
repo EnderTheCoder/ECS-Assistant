@@ -2,7 +2,6 @@ package ecsassistant.ecsassistant.commander;
 
 import ecsassistant.ecsassistant.config.ConfigReader;
 import ecsassistant.ecsassistant.money.Vault;
-import ecsassistant.ecsassistant.watcher.FlyWatcher;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,7 +13,6 @@ import java.util.*;
 
 import static org.bukkit.Bukkit.*;
 
-//import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TeleportCommander implements CommandExecutor {
     private static final Economy econ = Vault.getEconomy();
@@ -29,8 +27,6 @@ public class TeleportCommander implements CommandExecutor {
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
         ConfigReader config = new ConfigReader();
-
-//        if (args[1].equals("money")) Vault.addVaultCurrency(uuid, 100000.00);
 
         if (args.length == 0) {
             Player targetPlayer = teleportRequest.get(player);
@@ -48,7 +44,7 @@ public class TeleportCommander implements CommandExecutor {
 
             targetPlayer.teleport(player.getLocation());
             targetPlayer.sendMessage(ChatColor.GREEN + String.format("[tpx]传送成功，消耗账户余额 %s", teleportCosts.get(player)));
-            player.sendMessage(ChatColor.GREEN + "[tpx]对方已成功ZQ传送到你的身边");
+            player.sendMessage(ChatColor.GREEN + "[tpx]对方已成功传送到你的身边");
             if (teleportCosts.get(player) > Vault.checkCurrency(targetPlayer.getUniqueId())) {
                 sender.sendMessage(ChatColor.RED + "[tpx]对方的账户余额不足以支持此次传送");
                 targetPlayer.sendMessage(ChatColor.RED + "[tpx]你的账户余额不足以支持此次传送");
