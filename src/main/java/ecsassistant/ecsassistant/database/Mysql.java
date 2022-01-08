@@ -31,6 +31,8 @@ public class Mysql{
             // 驱动名称
             Class.forName(JDBC_DRIVER); // forName 又来了！
             connection = DriverManager.getConnection(DB_URL, config.getMysqlConfig("Mysql.Username"), config.getMysqlConfig("Mysql.password"));
+            getLogger().info(ChatColor.GREEN + "Mysql successfully connected.");
+
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return false;
@@ -42,7 +44,7 @@ public class Mysql{
 
     public Boolean prepareSql(String sql) {
         try {
-            statement = connection.prepareStatement(sql);
+            statement = getConnection().prepareStatement(sql);
             return true;
         } catch (SQLException e) {
             getLogger().warning(ChatColor.RED + "An error in mysql occurred while preparing sql.");
@@ -79,6 +81,19 @@ public class Mysql{
         } catch (SQLException e) {
             getLogger().warning(ChatColor.RED + "An error in mysql occurred while getting sql result.");
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Connection getConnection() {
+        try {
+            if (!connection.isValid(1000)) {
+                getLogger().info(ChatColor.RED + "Mysql connection is now closed. Trying to creating a new one.");
+                mysqlInit();
+            }
+            return connection;
+
+        } catch (SQLException e) {
             return null;
         }
     }
