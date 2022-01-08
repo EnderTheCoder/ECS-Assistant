@@ -1,5 +1,19 @@
+#飞行价格（每分钟计）
 FlyCostsPerMin: 50
-
+#飞行起步价
 FlyCostsStart: 100
-
+#传送花费倍率（价格=距离*倍率）
 TeleportCosts: 0.5
+#死亡不掉落保护价格
+KeepInventoryCosts: 100
+
+
+# Mysql功能区
+Mysql.Username: username
+Mysql.password: 123456
+Mysql.Address: 127.0.0.1
+Mysql.Port: 3306
+Mysql.DataBaseName: database
+
+#用户默认设置区
+PlayerDefaultConfig.isKeepInventoryEnabled: false

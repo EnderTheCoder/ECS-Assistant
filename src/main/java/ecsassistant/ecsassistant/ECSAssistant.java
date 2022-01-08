@@ -2,11 +2,18 @@ package ecsassistant.ecsassistant;
 
 import ecsassistant.ecsassistant.commander.AdminCommander;
 import ecsassistant.ecsassistant.commander.FlyCommander;
+import ecsassistant.ecsassistant.commander.KeepInventoryCommander;
 import ecsassistant.ecsassistant.commander.TeleportCommander;
+import ecsassistant.ecsassistant.database.Mysql;
+import ecsassistant.ecsassistant.event.KeepInventoryEvent;
 import ecsassistant.ecsassistant.money.Vault;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public final class ECSAssistant extends JavaPlugin {
     public static JavaPlugin instance;
@@ -25,6 +32,17 @@ public final class ECSAssistant extends JavaPlugin {
         }
         if (Bukkit.getPluginCommand("ecsadmin") != null) {
             Bukkit.getPluginCommand("ecsadmin").setExecutor(new AdminCommander());
+        }
+        if (Bukkit.getPluginCommand("ki") != null) {
+            Bukkit.getPluginCommand("ki").setExecutor(new KeepInventoryCommander());
+        }
+        Bukkit.getPluginManager().registerEvents(new KeepInventoryEvent(), this);
+        Mysql m = new Mysql();
+        if (!m.mysqlInit()) {
+            getLogger().warning(ChatColor.RED + "Failed to connect to mysql. Check your config.yml to fix this. Plugin is shutting down.");
+            getServer().getPluginManager().disablePlugin(this);
+        } else {
+            getLogger().info(ChatColor.GREEN + "Mysql connected.");
         }
     }
 
