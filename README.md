@@ -5,3 +5,5 @@ ECS Server Assistant Plugin
 #### 目前已经实现的功能有
 - 付费传送/tpx
 - 付费飞行/flyx
+- ECS服务器管理/ecsadmin
+- 付费死亡不掉落保护/ki
