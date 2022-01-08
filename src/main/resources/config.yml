@@ -6,6 +6,8 @@ FlyCostsStart: 100
 TeleportCosts: 0.5
 #死亡不掉落保护价格
 KeepInventoryCosts: 100
+#跨维度传送价格
+CrossDimensionTeleportCosts: 1000
 
 
 # Mysql功能区

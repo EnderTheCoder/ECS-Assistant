@@ -44,6 +44,8 @@ public class TeleportCommander implements CommandExecutor {
                 return true;
             }
 
+
+
             targetPlayer.teleport(player.getLocation());
             targetPlayer.sendMessage(ChatColor.GREEN + String.format("[tpx]传送成功，消耗账户余额 %s", teleportCosts.get(player)));
             player.sendMessage(ChatColor.GREEN + "[tpx]对方已成功ZQ传送到你的身边");
@@ -68,13 +70,20 @@ public class TeleportCommander implements CommandExecutor {
             return false;
         }
 
-        double distance = player.getLocation().distance(targetPlayer.getLocation());
-        double costs = distance * config.getTeleportCosts();
+
+        double costs;
+
+        if (targetPlayer.getLocation().getWorld().equals(player.getLocation().getWorld())) {
+            costs = config.getCrossDimensionTeleportCosts();//不同纬度使用固定价格
+        } else {
+            costs = player.getLocation().distance(targetPlayer.getLocation()) * config.getTeleportCosts();//同一维度使用距离计算价格
+        }
 
         if (costs > Vault.checkCurrency(uuid)) {
-            sender.sendMessage(ChatColor.RED + String.format("[tpx]你的账户余额不足以支持此次传送，距离 %s ，需要 %s ，", distance, costs));
+            sender.sendMessage(ChatColor.RED + String.format("[tpx]你的账户余额不足以支持此次传送，需要 %s ，", costs));
             return false;
         }
+
 
 
         teleportRequest.put(targetPlayer, player);

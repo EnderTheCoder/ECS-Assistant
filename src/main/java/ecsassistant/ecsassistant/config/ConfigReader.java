@@ -22,6 +22,10 @@ public class ConfigReader {
         return config.getDouble("KeepInventoryCosts");
     }
 
+    public double getCrossDimensionTeleportCosts() {
+        return config.getDouble("CrossDimensionTeleportCosts");
+    }
+
     public String getMysqlConfig(String mysqlConfigTag) {
         return config.getString(mysqlConfigTag);
     }
