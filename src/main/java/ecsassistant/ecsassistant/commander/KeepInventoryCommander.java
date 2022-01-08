@@ -1,5 +1,6 @@
 package ecsassistant.ecsassistant.commander;
 
+import ecsassistant.ecsassistant.ECSAssistant;
 import ecsassistant.ecsassistant.config.ConfigReader;
 import ecsassistant.ecsassistant.config.UserConfig;
 import ecsassistant.ecsassistant.money.Vault;
@@ -10,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -29,13 +31,17 @@ public class KeepInventoryCommander implements CommandExecutor {
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
         ConfigReader config = new ConfigReader();
-        if (UserConfig.getUserConfig(uuid, "isKeepInventoryEnabled").equals("true")) {
-            UserConfig.putUserConfig(uuid, "isKeepInventoryEnabled", "false");
-            player.sendMessage(ChatColor.YELLOW + "[ki]死亡不掉落保护现在已经关闭");
-        } else {
-            UserConfig.putUserConfig(uuid, "isKeepInventoryEnabled", "true");
-            player.sendMessage(ChatColor.GREEN + "[ki]死亡不掉落保护现在已经开启");
-        }
+        new BukkitRunnable() {
+            public void run() {
+                if (UserConfig.getUserConfig(uuid, "isKeepInventoryEnabled").equals("true")) {
+                    UserConfig.putUserConfig(uuid, "isKeepInventoryEnabled", "false");
+                    player.sendMessage(ChatColor.YELLOW + "[ki]死亡不掉落保护现在已经关闭");
+                } else {
+                    UserConfig.putUserConfig(uuid, "isKeepInventoryEnabled", "true");
+                    player.sendMessage(ChatColor.GREEN + "[ki]死亡不掉落保护现在已经开启");
+                }
+            }
+        }.runTaskAsynchronously(ECSAssistant.instance);
         return true;
     }
 }
