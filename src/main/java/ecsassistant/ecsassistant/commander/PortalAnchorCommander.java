@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static org.bukkit.Bukkit.broadcast;
 import static org.bukkit.Bukkit.getLogger;
 
 //import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,6 +30,25 @@ public class PortalAnchorCommander implements CommandExecutor {
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
         ConfigReader config = new ConfigReader();
+
+        switch (args[0]) {
+            case "set": {
+
+                break;
+            }
+            case "remove": {
+                break;
+            }
+            case "tp": {
+                break;
+            }
+            case "list": {
+                break;
+            }
+            default: {
+                return false;
+            }
+        }
 
         return true;
     }

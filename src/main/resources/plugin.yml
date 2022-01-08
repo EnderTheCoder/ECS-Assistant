@@ -21,9 +21,11 @@ commands:
     description: A command designed for op in ECS.
     permission: ecs.admin
     permission-message: You need to have the permission to use this command. Please contact your server OP.
-  ki:
+  keepinventory:
+    aliases:
+      - ki
     description: A command to let user protect thier inventory.
-    permission: ecs.ki
+    permission: ecs.keepinventory
     permission-message: You need to have the permission to use this command. Please contact your server OP.
 permissions:
   ecs.flyx:
@@ -35,6 +37,6 @@ permissions:
   ecs.admin:
     description: admin
     default: op
-  ecs.ki:
+  ecs.keepinventory:
     description: inventory protect
     default: true

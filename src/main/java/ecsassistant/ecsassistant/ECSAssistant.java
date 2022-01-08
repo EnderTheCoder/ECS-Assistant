@@ -1,9 +1,6 @@
 package ecsassistant.ecsassistant;
 
-import ecsassistant.ecsassistant.commander.AdminCommander;
-import ecsassistant.ecsassistant.commander.FlyCommander;
-import ecsassistant.ecsassistant.commander.KeepInventoryCommander;
-import ecsassistant.ecsassistant.commander.TeleportCommander;
+import ecsassistant.ecsassistant.commander.*;
 import ecsassistant.ecsassistant.database.Mysql;
 import ecsassistant.ecsassistant.event.KeepInventoryEvent;
 import ecsassistant.ecsassistant.money.Vault;
@@ -33,8 +30,11 @@ public final class ECSAssistant extends JavaPlugin {
         if (Bukkit.getPluginCommand("ecsadmin") != null) {
             Bukkit.getPluginCommand("ecsadmin").setExecutor(new AdminCommander());
         }
-        if (Bukkit.getPluginCommand("ki") != null) {
-            Bukkit.getPluginCommand("ki").setExecutor(new KeepInventoryCommander());
+        if (Bukkit.getPluginCommand("keepinventory") != null) {
+            Bukkit.getPluginCommand("keepinventory").setExecutor(new KeepInventoryCommander());
+        }
+        if (Bukkit.getPluginCommand("portalanchor") != null) {
+            Bukkit.getPluginCommand("portalanchor").setExecutor(new PortalAnchorCommander());
         }
         Bukkit.getPluginManager().registerEvents(new KeepInventoryEvent(), this);
         Mysql m = new Mysql();

@@ -40,6 +40,9 @@ public class AdminCommander implements CommandExecutor {
                 sender.sendMessage(ChatColor.GREEN + String.format("成功增加账户余额 %s ", args[2]));
                 break;
             }
+            default: {
+                return false;
+            }
         }
         return true;
     }
