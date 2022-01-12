@@ -19,3 +19,6 @@ Mysql.DataBaseName: database
 
 #用户默认设置区
 PlayerDefaultConfig.isKeepInventoryEnabled: false
+
+# 传送锚设置
+PortalAnchor.MaxPerUser: 10

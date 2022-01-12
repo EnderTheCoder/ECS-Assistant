@@ -2,7 +2,11 @@ name: ECSAssistant
 version: 1.0
 main: ecsassistant.ecsassistant.ECSAssistant
 api-version: 1.18
-depend: [ Vault, Essentials, GroupManager ]
+depend:
+  - Vault
+  - GroupManager
+softdepend:
+  - CMI
 authors: [ Ender ]
 description: ECS assistant plugin used for custom function.
 website: http://enderspro.xyz/

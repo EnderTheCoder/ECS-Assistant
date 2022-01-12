@@ -1,24 +1,20 @@
 package ecsassistant.ecsassistant.config;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import ecsassistant.ecsassistant.ECSAssistant;
 import ecsassistant.ecsassistant.database.Mysql;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class UserConfig {
     public static String getUserConfig(UUID uuid, String tag) {
-        Mysql m = new Mysql();
         String config;
 
         config = getConfigRaw(uuid);
         ConfigReader configReader = new ConfigReader();
+
 
 
         JSONObject json = JSON.parseObject(config);

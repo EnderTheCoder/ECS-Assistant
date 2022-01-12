@@ -30,7 +30,7 @@ public class AdminCommander implements CommandExecutor {
         ConfigReader config = new ConfigReader();
 
         switch (args[0]) {
-            case "moneyAdd": {
+            case "money": {
                 Player targetPlayer = getPlayer(args[1]);
                 if (targetPlayer == null) {
                     sender.sendMessage(ChatColor.RED + "[ecsadmin]玩家不存在");
@@ -41,6 +41,7 @@ public class AdminCommander implements CommandExecutor {
                 break;
             }
             default: {
+
                 return false;
             }
         }

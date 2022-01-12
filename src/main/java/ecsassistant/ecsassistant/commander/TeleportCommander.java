@@ -1,6 +1,7 @@
 package ecsassistant.ecsassistant.commander;
 
 import ecsassistant.ecsassistant.config.ConfigReader;
+import ecsassistant.ecsassistant.data.TeleportRequest;
 import ecsassistant.ecsassistant.money.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.security.Timestamp;
 import java.util.*;
 
 import static org.bukkit.Bukkit.*;
@@ -16,8 +18,8 @@ import static org.bukkit.Bukkit.*;
 
 public class TeleportCommander implements CommandExecutor {
     private static final Economy econ = Vault.getEconomy();
-    public static Map<Player, Player> teleportRequest= new HashMap<>();
-    public static Map<Player, Double> teleportCosts= new HashMap<>();
+    public static Map<Player, TeleportRequest> teleportRequest= new HashMap<>();
+//    public static Map<Player, Double> teleportCosts= new HashMap<>();
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -29,29 +31,31 @@ public class TeleportCommander implements CommandExecutor {
         ConfigReader config = new ConfigReader();
 
         if (args.length == 0) {
-            Player targetPlayer = teleportRequest.get(player);
-            if (targetPlayer == null) {
+            TeleportRequest request = teleportRequest.get(player);
+            if (request == null) {
                 player.sendMessage(ChatColor.RED + "[tpx]您没有等待中的传送请求");
                 return false;
             }
 
-            if (!targetPlayer.isOnline()) {
+            if (!request.sender.isOnline()) {
                 player.sendMessage(ChatColor.RED + "[tpx]接受传送请求失败，因为对方已离线");
                 return true;
             }
 
-
-
-            targetPlayer.teleport(player.getLocation());
-            targetPlayer.sendMessage(ChatColor.GREEN + String.format("[tpx]传送成功，消耗账户余额 %s", teleportCosts.get(player)));
-            player.sendMessage(ChatColor.GREEN + "[tpx]对方已成功传送到你的身边");
-            if (teleportCosts.get(player) > Vault.checkCurrency(targetPlayer.getUniqueId())) {
+            if (request.costs > Vault.checkCurrency(request.sender.getUniqueId())) {
                 sender.sendMessage(ChatColor.RED + "[tpx]对方的账户余额不足以支持此次传送");
-                targetPlayer.sendMessage(ChatColor.RED + "[tpx]你的账户余额不足以支持此次传送");
+                request.sender.sendMessage(ChatColor.RED + "[tpx]你的账户余额不足以支持此次传送");
                 return false;
             }
 
-            Vault.subtractCurrency(targetPlayer.getUniqueId(), teleportCosts.get(player));
+
+            teleportRequest.put(player, null);
+
+            request.sender.teleport(player.getLocation());
+            player.sendMessage(ChatColor.GREEN + "[tpx]对方已成功传送到你的身边");
+
+            Vault.subtractCurrency(request.sender.getUniqueId(), request.costs);
+            request.sender.sendMessage(ChatColor.GREEN + String.format("[tpx]传送成功，消耗账户余额 %s", request.costs));
             return true;
         }
 
@@ -67,23 +71,28 @@ public class TeleportCommander implements CommandExecutor {
         }
 
 
-        double costs;
+        TeleportRequest request = new TeleportRequest();
+        request.sender = player;
+        request.receiver = targetPlayer;
+//        double costs;
 
         if (targetPlayer.getLocation().getWorld().equals(player.getLocation().getWorld())) {
-            costs = config.getCrossDimensionTeleportCosts();//不同纬度使用固定价格
+            request.costs = player.getLocation().distance(targetPlayer.getLocation()) * config.getTeleportCosts();//同一维度使用距离计算价格
         } else {
-            costs = player.getLocation().distance(targetPlayer.getLocation()) * config.getTeleportCosts();//同一维度使用距离计算价格
+            request.costs = config.getCrossDimensionTeleportCosts();//不同纬度使用固定价格
         }
 
-        if (costs > Vault.checkCurrency(uuid)) {
-            sender.sendMessage(ChatColor.RED + String.format("[tpx]你的账户余额不足以支持此次传送，需要 %s ，", costs));
+        if (request.costs > Vault.checkCurrency(uuid)) {
+            sender.sendMessage(ChatColor.RED + String.format("[tpx]你的账户余额不足以支持此次传送，需要 %s ，", request.costs));
             return false;
         }
 
 
 
-        teleportRequest.put(targetPlayer, player);
-        teleportCosts.put(targetPlayer, costs);
+
+
+
+        teleportRequest.put(targetPlayer, request);
         targetPlayer.sendMessage(ChatColor.YELLOW + String.format("[tpx]玩家 %s 请求传送到您身边，输入命令/tpx接受，如果您不同意忽略即可", player.getDisplayName()));
         player.sendMessage(ChatColor.AQUA + "[tpx]传送请求已发出，请等待对方同意");
 

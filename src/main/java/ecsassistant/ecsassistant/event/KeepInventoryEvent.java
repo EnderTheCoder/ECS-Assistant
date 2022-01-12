@@ -29,9 +29,10 @@ public class KeepInventoryEvent implements Listener {
 //        if (Vault.checkCurrency(uuid) < config.getKeepInventoryCosts()) {
 //            e.
 //        }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
                 if (UserConfig.getUserConfig(uuid, "isKeepInventoryEnabled").equals("true")) {
                     if (Vault.checkCurrency(uuid) < config.getKeepInventoryCosts()) {
                         player.sendMessage(ChatColor.YELLOW + "[ki]虽然你启动了死亡不掉落保护，但是你的账户余额不足以让你优雅的死亡");
@@ -43,8 +44,8 @@ public class KeepInventoryEvent implements Listener {
                         Vault.subtractCurrency(uuid, config.getKeepInventoryCosts());
                     }
                 }
-            }
-        }.runTaskAsynchronously(ECSAssistant.instance);
+//            }
+//        }.runTaskAsynchronously(ECSAssistant.instance);
 
     }
 }
