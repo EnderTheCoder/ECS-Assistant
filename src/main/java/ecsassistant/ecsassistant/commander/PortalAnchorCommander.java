@@ -30,11 +30,11 @@ public class PortalAnchorCommander implements CommandExecutor {
         ConfigReader config = new ConfigReader();
 
         Mysql m = new Mysql();
+        if (args.length < 1) return false;
 
         switch (args[0]) {
             case "set": {
                 if (args.length < 3) return false;
-
                 m.prepareSql("SELECT name from portal_anchors WHERE name = ?");
                 m.setData(1, args[2]);
                 m.execute();
@@ -136,7 +136,7 @@ public class PortalAnchorCommander implements CommandExecutor {
                 try {
                     while (resultSet.next()) {
                         if (resultSet.getString("owner_uuid").equals(String.valueOf(player.getUniqueId()))) {
-                            if (resultSet.getString("name").equals(args[2])) {
+                            if (resultSet.getString("name").equals(args[1])) {
                                 isOwner = true;
                             }
                         }

@@ -17,10 +17,14 @@ commands:
     description: A command that let user to fly.
     permission: ecs.flyx
     permission-message: You need to have the permission to use this command. Please contact your server OP.
+    usage: 输入/flyx开启或关闭飞行
   tpx:
     description: A command that enable user to teleport.
     permission: ecs.tpx
     permission-message: You need to have the permission to use this command. Please contact your server OP.
+    usage: |
+          /tpx <目标玩家ID> 发送请求
+          /tpx 接受请求
   ecsadmin:
     description: A command designed for op in ECS.
     permission: ecs.admin
@@ -31,13 +35,18 @@ commands:
     description: A command to let user protect thier inventory.
     permission: ecs.keepinventory
     permission-message: You need to have the permission to use this command. Please contact your server OP.
+    usage: 输入/keepinventory来关闭或开启死亡不掉落保护
   portalanchor:
     aliases:
       - pa
     description: A command used to set, remove and tp portal anchors;
     permission: ecs.portalanchor
     permission-message: You need to have the permission to use this command. Please contact your server OP.
-
+    usage: |
+          /portalanchor set [public/private/commercial] <名称> <传送价格(仅commercial类型可用此参数)> 创建一个[公开/私人/收费]类型的传送锚
+          /portalanchor list 列出所有传送锚
+          /portalanchor remove <名称> 删除指定的传送锚
+          /portalanchor tp <名称> 传送到指定的传送锚
 permissions:
   ecs.flyx:
     description: fly
