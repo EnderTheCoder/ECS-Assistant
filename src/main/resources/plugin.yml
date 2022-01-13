@@ -31,6 +31,13 @@ commands:
     description: A command to let user protect thier inventory.
     permission: ecs.keepinventory
     permission-message: You need to have the permission to use this command. Please contact your server OP.
+  portalanchor:
+    aliases:
+      - pa
+    description: A command used to set, remove and tp portal anchors;
+    permission: ecs.portalanchor
+    permission-message: You need to have the permission to use this command. Please contact your server OP.
+
 permissions:
   ecs.flyx:
     description: fly
@@ -43,4 +50,7 @@ permissions:
     default: op
   ecs.keepinventory:
     description: inventory protect
+    default: true
+  ecs.portalanchor:
+    description: portal anchor
     default: true

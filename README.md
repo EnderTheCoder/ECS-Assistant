@@ -7,3 +7,4 @@ ECS Server Assistant Plugin
 - 付费飞行/flyx
 - ECS服务器管理/ecsadmin
 - 付费死亡不掉落保护/keepinventory
+- 多功能传送锚/portalanchor

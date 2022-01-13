@@ -8,6 +8,12 @@ TeleportCosts: 0.5
 KeepInventoryCosts: 100
 #跨维度传送价格
 CrossDimensionTeleportCosts: 1000
+# 传送锚-公共锚价格
+Costs.PortalAnchor.Public: 100
+# 传送锚-私人锚价格
+Costs.PortalAnchor.Private: 50
+# 传送锚-商业锚价格
+Costs.PortalAnchor.Commercial: 300
 
 
 # Mysql功能区

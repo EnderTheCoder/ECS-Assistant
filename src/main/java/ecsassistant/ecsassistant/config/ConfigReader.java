@@ -33,4 +33,7 @@ public class ConfigReader {
     public String getPlayerDefaultConfig(String playerConfigTag) {
         return config.getString("PlayerDefaultConfig." + playerConfigTag);
     }
+    public Double getCosts(String costsTag) {
+        return config.getDouble("Costs." + costsTag);
+    }
 }
