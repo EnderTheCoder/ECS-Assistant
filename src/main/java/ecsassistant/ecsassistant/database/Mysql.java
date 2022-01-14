@@ -85,6 +85,10 @@ public class Mysql{
         }
     }
 
+    public void close() throws SQLException {
+        connection.close();
+    }
+
     public Connection getConnection() {
         try {
             if (!connection.isValid(1000)) {

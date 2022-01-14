@@ -40,7 +40,7 @@ public class KeepInventoryEvent implements Listener {
                         e.setKeepInventory(true);
                         e.setKeepLevel(true);
                         e.getDrops().clear();
-                        e.setDeathMessage(ChatColor.GREEN + "[ki]死亡不掉落保护成功启动，你的物品没有丢失");
+                        player.sendMessage(ChatColor.GREEN + "[ki]死亡不掉落保护成功启动，你的物品没有丢失");
                         Vault.subtractCurrency(uuid, config.getKeepInventoryCosts());
                     }
                 }

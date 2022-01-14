@@ -173,7 +173,7 @@ public class PortalAnchorCommander implements CommandExecutor {
 
                 try {
                     resultSet.next();
-                    if (!resultSet.wasNull()) {
+                    if (resultSet.getRow() != 0) {
                         isPortalExists = true;
                         location = new Location(getWorld(resultSet.getString("world")), Double.parseDouble(resultSet.getString("x")), Double.parseDouble(resultSet.getString("y")), Double.parseDouble(resultSet.getString("z")));
 
