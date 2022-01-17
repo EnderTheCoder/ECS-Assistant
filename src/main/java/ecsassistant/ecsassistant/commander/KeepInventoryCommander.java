@@ -30,7 +30,6 @@ public class KeepInventoryCommander implements CommandExecutor {
         }
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
-        ConfigReader config = new ConfigReader();
         new BukkitRunnable() {
             public void run() {
                 if (UserConfig.getUserConfig(uuid, "isKeepInventoryEnabled").equals("true")) {

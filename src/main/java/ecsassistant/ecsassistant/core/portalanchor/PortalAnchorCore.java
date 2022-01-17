@@ -29,6 +29,8 @@ public class PortalAnchorCore {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        m.close();
+
         return false;
     }
 
@@ -46,6 +48,8 @@ public class PortalAnchorCore {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        m.close();
+
         assert player != null;
         return player.getName();
     }
@@ -64,6 +68,8 @@ public class PortalAnchorCore {
         m.setData(9, String.valueOf(player.getLocation().getWorld().getName()));
 
         m.execute();
+        m.close();
+
     }
 
     public static void remove(String name) {
@@ -71,6 +77,8 @@ public class PortalAnchorCore {
         m.prepareSql("DELETE FROM portal_anchors WHERE name = ?");
         m.setData(1, name);
         m.execute();
+        m.close();
+
     }
 
     public static PortalAnchor get(String name) {
@@ -99,6 +107,7 @@ public class PortalAnchorCore {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        m.close();
 
         return portalAnchor;
     }
@@ -130,6 +139,7 @@ public class PortalAnchorCore {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        m.close();
         return portalAnchors;
     }
 }

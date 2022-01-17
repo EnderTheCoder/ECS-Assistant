@@ -50,7 +50,7 @@ commands:
 permissions:
   ecs.flyx:
     description: fly
-    default: true
+    default: op
   ecs.tpx:
     description: tp
     default: true

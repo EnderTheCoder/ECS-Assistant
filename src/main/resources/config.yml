@@ -18,7 +18,7 @@ Costs.PortalAnchor.Commercial: 1000
 Costs.OutOfFlyArea: 3
 
 #最大飞行距离
-Distance.FlyArea: 80
+Distance.Fly: 80
 
 #飞行CD
 CD.Fly: 60

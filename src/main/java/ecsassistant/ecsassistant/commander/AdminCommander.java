@@ -27,7 +27,6 @@ public class AdminCommander implements CommandExecutor {
         }
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
-        ConfigReader config = new ConfigReader();
 
         switch (args[0]) {
             case "money": {

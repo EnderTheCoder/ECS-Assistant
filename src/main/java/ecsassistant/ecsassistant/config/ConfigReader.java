@@ -4,36 +4,44 @@ import ecsassistant.ecsassistant.ECSAssistant;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigReader {
-    FileConfiguration config = ECSAssistant.instance.getConfig();
+    static FileConfiguration config = ECSAssistant.instance.getConfig();
 
-    public double getFlyCostsPerSec() {
+    public static double getFlyCostsPerSec() {
         return config.getInt("FlyCostsPerMin");
     }
 
-    public double getFlyCostsStart() {
+    public static double getFlyCostsStart() {
         return config.getInt("FlyCostsStart");
     }
 
-    public double getTeleportCosts() {
+    public static double getTeleportCosts() {
         return config.getDouble("TeleportCosts");
     }
 
-    public double getKeepInventoryCosts() {
+    public static double getKeepInventoryCosts() {
         return config.getDouble("KeepInventoryCosts");
     }
 
-    public double getCrossDimensionTeleportCosts() {
+    public static double getCrossDimensionTeleportCosts() {
         return config.getDouble("CrossDimensionTeleportCosts");
     }
 
-    public String getMysqlConfig(String mysqlConfigTag) {
+    public static String getMysqlConfig(String mysqlConfigTag) {
         return config.getString(mysqlConfigTag);
     }
 
-    public String getPlayerDefaultConfig(String playerConfigTag) {
+    public static String getPlayerDefaultConfig(String playerConfigTag) {
         return config.getString("PlayerDefaultConfig." + playerConfigTag);
     }
-    public Double getCosts(String costsTag) {
+    public static Double getCosts(String costsTag) {
         return config.getDouble("Costs." + costsTag);
+    }
+
+    public static Double getDistance(String distanceTag) {
+        return config.getDouble("Distance." + distanceTag);
+    }
+
+    public static int getCD(String cdTag) {
+        return config.getInt("CD." + cdTag);
     }
 }
