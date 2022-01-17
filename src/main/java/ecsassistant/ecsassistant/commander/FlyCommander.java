@@ -14,10 +14,8 @@ import java.util.*;
 
 import static org.bukkit.Bukkit.getLogger;
 
-//import javax.annotation.ParametersAreNonnullByDefault;
 
 public class FlyCommander implements CommandExecutor {
-    private static final Economy econ = Vault.getEconomy();
 
     public static Map<Player, Boolean> isFlying = new HashMap<>();;
 
@@ -44,15 +42,13 @@ public class FlyCommander implements CommandExecutor {
             return false;
         } else {
 
-            isFlying.put(player, true);
-
+            isFlying.put(player, true);//修改用户状态为飞行中
+            Vault.subtractCurrency(player.getUniqueId(), config.getFlyCostsStart());//扣起步价
             player.sendMessage(ChatColor.GREEN + "[flyx]芜湖起飞");
-            Timer t = new Timer();
+            Timer t = new Timer();//启动飞行监视线程
             FlyWatcher w = new FlyWatcher();
-
             w.setUser(player);
-
-            t.schedule(w, 60, 86400);
+            t.schedule(w, 1, 60 * 60 * 24);//最多飞行多少秒？
             return true;
 
         }

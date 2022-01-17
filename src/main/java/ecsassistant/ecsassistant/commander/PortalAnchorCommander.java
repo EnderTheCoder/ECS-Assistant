@@ -1,10 +1,13 @@
 package ecsassistant.ecsassistant.commander;
 
 import ecsassistant.ecsassistant.config.ConfigReader;
+import ecsassistant.ecsassistant.core.portalanchor.PortalAnchorCore;
+import ecsassistant.ecsassistant.data.PortalAnchor;
 import ecsassistant.ecsassistant.database.Mysql;
 import ecsassistant.ecsassistant.money.Vault;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,92 +31,61 @@ public class PortalAnchorCommander implements CommandExecutor {
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
         ConfigReader config = new ConfigReader();
-
-        Mysql m = new Mysql();
         if (args.length < 1) return false;
-
         switch (args[0]) {
             case "set": {
                 if (args.length < 3) return false;
-                m.prepareSql("SELECT name from portal_anchors WHERE name = ?");
-                m.setData(1, args[2]);
-                m.execute();
-                ResultSet resultSet = m.getResult();
-                try {
-                    resultSet.next();
-                    if (resultSet.getString("name").equals(args[2])) {
-                        sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]已经有一个名称为" + args[2] + "的传送锚存在，无法创建更多");
-                        break;
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (PortalAnchorCore.isExists(args[2])) {
+                    sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]已经有一个名称为" + args[2] + "的传送锚存在，无法创建更多");
+                    break;
                 }
-
                 switch (args[1]) {
                     case "public": {
-                        if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Public")) {
+
+                        if (args.length != 3) return false;
+
+                        if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Public")) {//检测钱是否足够
                             sender.sendMessage(ChatColor.RED + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
-                        Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.Public"));
-                        m.prepareSql("INSERT INTO portal_anchors (name, type, owner_uuid, x, y, z, teleport_costs, players_to_be_trusted, world) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        m.setData(1, args[2]);
-                        m.setData(2, args[1]);
-                        m.setData(3, player.getUniqueId().toString());
-                        m.setData(4, String.valueOf(player.getLocation().getX()));
-                        m.setData(5, String.valueOf(player.getLocation().getY()));
-                        m.setData(6, String.valueOf(player.getLocation().getZ()));
-                        m.setData(7, "0.00");
-                        m.setData(8, "{}");
-                        m.setData(9, String.valueOf(player.getLocation().getWorld().getName()));
 
-                        m.execute();
+                        Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.Public"));//扣钱
+
+                        PortalAnchorCore.set(args[2], args[1], player, 0.0);//创建
+
                         sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]传送锚已经创建，类型" + args[1]);
                         break;
                     }
                     case "private": {
+                        if (args.length != 3) return false;
+
                         if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Private")) {
                             sender.sendMessage(ChatColor.RED + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
                         Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.Private"));
 
-                        m.prepareSql("INSERT INTO portal_anchors (name, type, owner_uuid, x, y, z, teleport_costs, players_to_be_trusted, world) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        m.setData(1, args[2]);
-                        m.setData(2, args[1]);
-                        m.setData(3, String.valueOf(((Player) sender).getUniqueId()));
-                        m.setData(4, String.valueOf(player.getLocation().getX()));
-                        m.setData(5, String.valueOf(player.getLocation().getY()));
-                        m.setData(6, String.valueOf(player.getLocation().getZ()));
-                        m.setData(7, "0.00");
-                        m.setData(8, "{}");
-                        m.setData(9, String.valueOf(player.getLocation().getWorld().getName()));
+                        PortalAnchorCore.set(args[2], args[1], player, 0.0);
 
-                        m.execute();
                         sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]传送锚已经创建，类型" + args[1]);
                         break;
                     }
                     case "commercial": {
-                        if (args.length < 4) return false;
+                        if (args.length != 4) return false;
+
+                        if (Double.parseDouble(args[3]) <= 0) {
+                            sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你输入的价格不合法");
+                            break;
+                        }
 
                         if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Commercial")) {
-                            sender.sendMessage(ChatColor.RED + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
+                            sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
                         Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.commercial"));
 
-                        m.prepareSql("INSERT INTO portal_anchors (name, type, owner_uuid, x, y, z, teleport_costs, players_to_be_trusted, world) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        m.setData(1, args[2]);
-                        m.setData(2, args[1]);
-                        m.setData(3, String.valueOf(((Player) sender).getUniqueId()));
-                        m.setData(4, String.valueOf(player.getLocation().getX()));
-                        m.setData(5, String.valueOf(player.getLocation().getY()));
-                        m.setData(6, String.valueOf(player.getLocation().getZ()));
-                        m.setData(7, args[3]);
-                        m.setData(8, "{}");
-                        m.setData(9, String.valueOf(player.getLocation().getWorld().getName()));
+                        PortalAnchorCore.set(args[2], args[1], player, Double.parseDouble(args[3]));
 
-                        m.execute();
                         sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]传送锚已经创建，类型" + args[1]);
 
                         break;
@@ -126,148 +98,91 @@ public class PortalAnchorCommander implements CommandExecutor {
                 break;
             }
             case "remove": {
-                if (args.length < 2) return false;
-
-                m.prepareSql("SELECT * FROM portal_anchors WHERE owner_uuid = ?");
-                m.setData(1, String.valueOf(player.getUniqueId()));
-                m.execute();
-                ResultSet resultSet = m.getResult();
-                boolean isOwner = false;
-                try {
-                    while (resultSet.next()) {
-                        if (resultSet.getString("owner_uuid").equals(String.valueOf(player.getUniqueId()))) {
-                            if (resultSet.getString("name").equals(args[1])) {
-                                isOwner = true;
-                            }
-                        }
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                if (isOwner) {
-                    m.prepareSql("DELETE FROM portal_anchors WHERE name = ?");
-                    m.setData(1, args[1]);
-                    m.execute();
-                    sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]名称为" + args[1] + "的传送锚删除成功");
-                } else {
+                if (args.length != 2) return false;
+                if (!PortalAnchorCore.isExists(args[1]) || !Objects.equals(PortalAnchorCore.getOwner(args[1]), player.getName())) {
                     sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]没有找到属于您的，且名称为" + args[1] + "的传送锚，请检查名称是否正确");
+                } else {
+                    PortalAnchorCore.remove(args[1]);
+                    sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]名称为" + args[1] + "的传送锚删除成功");
                 }
                 break;
             }
             case "tp": {
                 if (args.length < 2) return false;
-
-                m.prepareSql("SELECT * FROM portal_anchors WHERE name = ?");
-                m.setData(1, args[1]);
-                m.execute();
-                ResultSet resultSet = m.getResult();
-                boolean isPortalExists = false;
-
-                Location location = null;
-                double costs = 0;
-                String type = "";
-                String owner_uuid = "";
-
-
-                try {
-                    resultSet.next();
-                    if (resultSet.getRow() != 0) {
-                        isPortalExists = true;
-                        location = new Location(getWorld(resultSet.getString("world")), Double.parseDouble(resultSet.getString("x")), Double.parseDouble(resultSet.getString("y")), Double.parseDouble(resultSet.getString("z")));
-
-                        costs = resultSet.getDouble("teleport_costs");
-                        type = resultSet.getString("type");
-                        owner_uuid = resultSet.getString("owner_uuid");
-
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (!PortalAnchorCore.isExists(args[1])) {
+                    sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你输入的传送锚不存在");
+                    break;
                 }
 
+                PortalAnchor portalAnchor = PortalAnchorCore.get(args[1]);
 
-                if (isPortalExists) {
-                    Player owner = getPlayer(UUID.fromString(owner_uuid));
+                switch (portalAnchor.type) {
+                    case "public": {
 
-                    switch (type) {
-                        case "public": {
+                        player.teleport(portalAnchor.location);
 
-                            player.teleport(location);
-
-                            if (owner != null && owner.isOnline()) {
-                                owner.sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的公共传送锚" + args[1]);
-                            }
-
-                                sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你已被成功传送至目标传送锚" + args[1]);
-                            break;
+                        if (portalAnchor.owner.isOnline()) {
+                            portalAnchor.owner.getPlayer().sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的公共传送锚" + args[1]);
                         }
-                        case "private": {
-                            if (owner_uuid.equals(String.valueOf(player.getUniqueId()))) {
-                                player.teleport(location);
-                            } else {
-                                sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你没有使用目标传送锚" + args[1] + "的权限");
-                            }
-                            break;
-                        }
-                        case "commercial": {
-                            if (Vault.checkCurrency(player.getUniqueId()) < costs) {
-                                sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你的账户余额不足以支付该传送锚设置者设置的花费，该传送锚的传送花费为" + costs);
-                            } else {
-                                Vault.subtractCurrency(uuid, costs);
-                                Vault.addVaultCurrency(UUID.fromString(owner_uuid), costs);
-
-                                player.teleport(location);
-                                if (owner != null && owner.isOnline()) {
-                                    owner.sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的付费传送锚" + args[1] + "并向你支付了" + costs);
-                                }
-                                sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你已被成功传送至目标传送锚" + args[1] + "，本次传送花费" + costs);
-
-                            }
-                        }
+                        sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你已被成功传送至目标传送锚" + args[1]);
+                        break;
                     }
-                } else {
-                    sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]没有找到属于您的，且名称为" + args[1] + "的传送锚，请检查名称是否正确");
+                    case "private": {
+                        if (portalAnchor.owner.getName().equals(player.getName())) {
+                            player.teleport(portalAnchor.location);
+                        } else {
+                            sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你没有使用目标传送锚" + args[1] + "的权限");
+                        }
+                        if (portalAnchor.owner.isOnline()) {
+                            portalAnchor.owner.getPlayer().sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的私人传送锚" + args[1]);
+                        }
+                        player.teleport(portalAnchor.location);
+                        sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你已被成功传送至目标传送锚" + args[1]);
+                        break;
+                    }
+                    case "commercial": {
+                        if (Vault.checkCurrency(player.getUniqueId()) < portalAnchor.costs) {
+                            sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你的账户余额不足以支付该传送锚设置者设置的花费，该传送锚的传送花费为" + portalAnchor.costs);
+                        } else {
+                            Vault.subtractCurrency(uuid, portalAnchor.costs);
+                            Vault.addVaultCurrency(portalAnchor.owner.getUniqueId(), portalAnchor.costs);
+                            if (portalAnchor.owner.isOnline()) {
+                                portalAnchor.owner.getPlayer().sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的商业传送锚" + args[1]);
+                            }
+                            player.teleport(portalAnchor.location);
+                            sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你已被成功传送至目标传送锚" + args[1] + "，本次传送花费" + Vault.curtate(portalAnchor.costs));
+                        }
+                        break;
+                    }
                 }
-
                 break;
             }
             case "list": {
-                m.prepareSql("SELECT * FROM portal_anchors");
-                m.execute();
-                ResultSet resultSet = m.getResult();
-                player.sendMessage(ChatColor.AQUA + "[PortalAnchor]传送锚列表");
-                    try {
-                        while (resultSet.next()) {
-                            if (resultSet.getString("type").equals("private")) {
-                                if (!(resultSet.getString("owner_uuid").equals(String.valueOf(player.getUniqueId())))) {
-                                    continue;
-                                }
-                            }
 
-                            String message = "名称："+resultSet.getString("name")+"  类型"+resultSet.getString("type")+"  拥有者"+getOfflinePlayer(UUID.fromString(resultSet.getString("owner_uuid"))).getName()+"  位置("+resultSet.getString("world")+"/x:"+resultSet.getString("x")+"/y:"+resultSet.getString("y")+"/z:"+resultSet.getString("z")+")";
+                PortalAnchor[] portalAnchors = PortalAnchorCore.getAll();
 
-                            switch (resultSet.getString("type")) {
-                                case "public": {
-                                    message = ChatColor.GREEN + message;
-                                    break;
-                                }
-                                case "private": {
-                                    message = ChatColor.RED + message;
-                                    break;
-                                }
-                                case "commercial": {
-                                    message = ChatColor.GOLD +message;
-                                    break;
-                                }
-                            }
-                            player.sendMessage(message);
-
+                for (PortalAnchor portalAnchor : portalAnchors) {
+                    if (portalAnchor == null) break;
+                    String message = "名称：" + portalAnchor.name + "  类型" + portalAnchor.type + "  拥有者" + portalAnchor.owner.getName() + "  位置(" + portalAnchor.location.getWorld().getName()+ "/x:" + Vault.curtate(portalAnchor.location.getX()) + "/y:" + Vault.curtate(portalAnchor.location.getY()) + "/z:" + Vault.curtate(portalAnchor.location.getZ()) + ")";
+                    World world = portalAnchor.location.getWorld();
+                    switch (portalAnchor.type) {
+                        case "public": {
+                            message = ChatColor.GREEN + message;
+                            break;
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                        case "private": {
+                            if (!Objects.equals(portalAnchor.owner.getName(), player.getName())) continue;
+                            message = ChatColor.RED + message;
+                            break;
+                        }
+                        case "commercial": {
+                            message = message + "  传送花费:" + Vault.curtate(portalAnchor.costs);
+                            message = ChatColor.GOLD + message;
+                            break;
+                        }
                     }
-
+                    player.sendMessage(message);
+                }
 
                 break;
             }

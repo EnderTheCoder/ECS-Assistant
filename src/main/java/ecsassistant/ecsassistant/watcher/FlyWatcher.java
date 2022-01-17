@@ -43,7 +43,7 @@ public class FlyWatcher extends TimerTask {
             return;
         }
 
-        if (config.getFlyCostsPerMin() > Vault.checkCurrency(player.getUniqueId()))
+        if (config.getFlyCostsPerSec() > Vault.checkCurrency(player.getUniqueId()))
         {
             FlyCommander.isFlying.put(player, false);
 
@@ -54,6 +54,8 @@ public class FlyWatcher extends TimerTask {
             this.cancel();
             return;
         }
+
+        Vault.subtractCurrency(player.getUniqueId(), config.getFlyCostsPerSec());
 
         if (!FlyCommander.isFlying.get(player)) {
 
@@ -70,8 +72,8 @@ public class FlyWatcher extends TimerTask {
         counter++;
 
         if (counter == 0) return;
-
-        player.sendMessage(ChatColor.AQUA + String.format("[flyx]您已累计飞行 %s 分钟，共消耗您的账号余额 %s", counter, counter * config.getFlyCostsPerMin() + config.getFlyCostsStart()));
+        if (counter % 60 == 0)
+            player.sendMessage(ChatColor.AQUA + String.format("[flyx]您已累计飞行 %s 分钟，共消耗您的账号余额 %s", counter / 60, counter * config.getFlyCostsPerSec() + config.getFlyCostsStart()));
 
 
     }

@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class ConfigReader {
     FileConfiguration config = ECSAssistant.instance.getConfig();
 
-    public double getFlyCostsPerMin() {
+    public double getFlyCostsPerSec() {
         return config.getInt("FlyCostsPerMin");
     }
 
