@@ -28,7 +28,6 @@ public class TeleportCommander implements CommandExecutor {
 
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
-        ConfigReader config = new ConfigReader();
 
         if (args.length == 0) {
             TeleportRequest request = teleportRequest.get(player);
@@ -77,9 +76,9 @@ public class TeleportCommander implements CommandExecutor {
 //        double costs;
 
         if (targetPlayer.getLocation().getWorld().equals(player.getLocation().getWorld())) {
-            request.costs = player.getLocation().distance(targetPlayer.getLocation()) * config.getTeleportCosts();//同一维度使用距离计算价格
+            request.costs = player.getLocation().distance(targetPlayer.getLocation()) * ConfigReader.getTeleportCosts();//同一维度使用距离计算价格
         } else {
-            request.costs = config.getCrossDimensionTeleportCosts();//不同纬度使用固定价格
+            request.costs = ConfigReader.getCrossDimensionTeleportCosts();//不同纬度使用固定价格
         }
 
         if (request.costs > Vault.checkCurrency(uuid)) {

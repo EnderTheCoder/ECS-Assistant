@@ -1,5 +1,5 @@
 name: ECSAssistant
-version: 1.0
+version: 1.1
 main: ecsassistant.ecsassistant.ECSAssistant
 api-version: 1.18
 depend:
@@ -50,7 +50,7 @@ commands:
 permissions:
   ecs.flyx:
     description: fly
-    default: op
+    default: true
   ecs.tpx:
     description: tp
     default: true
@@ -62,4 +62,7 @@ permissions:
     default: true
   ecs.portalanchor:
     description: portal anchor
+    default: true
+  ecs.broadcast:
+    description: broadcast message
     default: true

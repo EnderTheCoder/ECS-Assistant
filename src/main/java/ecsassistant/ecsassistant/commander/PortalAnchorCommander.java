@@ -30,7 +30,6 @@ public class PortalAnchorCommander implements CommandExecutor {
         }
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
-        ConfigReader config = new ConfigReader();
         if (args.length < 1) return false;
         switch (args[0]) {
             case "set": {
@@ -44,12 +43,12 @@ public class PortalAnchorCommander implements CommandExecutor {
 
                         if (args.length != 3) return false;
 
-                        if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Public")) {//检测钱是否足够
+                        if (Vault.checkCurrency(player.getUniqueId()) < ConfigReader.getCosts("PortalAnchor.Public")) {//检测钱是否足够
                             sender.sendMessage(ChatColor.RED + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
 
-                        Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.Public"));//扣钱
+                        Vault.subtractCurrency(uuid, ConfigReader.getCosts("PortalAnchor.Public"));//扣钱
 
                         PortalAnchorCore.set(args[2], args[1], player, 0.0);//创建
 
@@ -59,11 +58,11 @@ public class PortalAnchorCommander implements CommandExecutor {
                     case "private": {
                         if (args.length != 3) return false;
 
-                        if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Private")) {
+                        if (Vault.checkCurrency(player.getUniqueId()) < ConfigReader.getCosts("PortalAnchor.Private")) {
                             sender.sendMessage(ChatColor.RED + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
-                        Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.Private"));
+                        Vault.subtractCurrency(uuid, ConfigReader.getCosts("PortalAnchor.Private"));
 
                         PortalAnchorCore.set(args[2], args[1], player, 0.0);
 
@@ -78,11 +77,11 @@ public class PortalAnchorCommander implements CommandExecutor {
                             break;
                         }
 
-                        if (Vault.checkCurrency(player.getUniqueId()) < config.getCosts("PortalAnchor.Commercial")) {
+                        if (Vault.checkCurrency(player.getUniqueId()) < ConfigReader.getCosts("PortalAnchor.Commercial")) {
                             sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]你的余额不足以支付创建新传送锚的费用");
                             break;
                         }
-                        Vault.subtractCurrency(uuid, config.getCosts("PortalAnchor.commercial"));
+                        Vault.subtractCurrency(uuid, ConfigReader.getCosts("PortalAnchor.commercial"));
 
                         PortalAnchorCore.set(args[2], args[1], player, Double.parseDouble(args[3]));
 
@@ -132,6 +131,7 @@ public class PortalAnchorCommander implements CommandExecutor {
                             player.teleport(portalAnchor.location);
                         } else {
                             sender.sendMessage(ChatColor.GREEN + "[PortalAnchor]你没有使用目标传送锚" + args[1] + "的权限");
+                            return true;
                         }
                         if (portalAnchor.owner.isOnline()) {
                             portalAnchor.owner.getPlayer().sendMessage(ChatColor.AQUA + "[PortalAnchor]玩家" + player.getDisplayName() + "使用了你的私人传送锚" + args[1]);
@@ -164,7 +164,6 @@ public class PortalAnchorCommander implements CommandExecutor {
                 for (PortalAnchor portalAnchor : portalAnchors) {
                     if (portalAnchor == null) break;
                     String message = "名称：" + portalAnchor.name + "  类型" + portalAnchor.type + "  拥有者" + portalAnchor.owner.getName() + "  位置(" + portalAnchor.location.getWorld().getName()+ "/x:" + Vault.curtate(portalAnchor.location.getX()) + "/y:" + Vault.curtate(portalAnchor.location.getY()) + "/z:" + Vault.curtate(portalAnchor.location.getZ()) + ")";
-                    World world = portalAnchor.location.getWorld();
                     switch (portalAnchor.type) {
                         case "public": {
                             message = ChatColor.GREEN + message;

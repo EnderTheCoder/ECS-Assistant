@@ -2,6 +2,7 @@ package ecsassistant.ecsassistant;
 
 import ecsassistant.ecsassistant.commander.*;
 import ecsassistant.ecsassistant.database.Mysql;
+import ecsassistant.ecsassistant.event.CannonBanEvent;
 import ecsassistant.ecsassistant.event.KeepInventoryEvent;
 import ecsassistant.ecsassistant.money.Vault;
 import org.bukkit.Bukkit;
@@ -37,6 +38,8 @@ public final class ECSAssistant extends JavaPlugin {
             Bukkit.getPluginCommand("portalanchor").setExecutor(new PortalAnchorCommander());
         }
         Bukkit.getPluginManager().registerEvents(new KeepInventoryEvent(), this);
+        Bukkit.getPluginManager().registerEvents(new CannonBanEvent(), this);
+
         Mysql m = new Mysql();
         if (!m.mysqlInit()) {
             getLogger().warning(ChatColor.RED + "Failed to connect to mysql. Check your config.yml to fix this. Plugin is shutting down.");

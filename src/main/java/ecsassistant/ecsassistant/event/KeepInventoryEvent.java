@@ -24,7 +24,6 @@ public class KeepInventoryEvent implements Listener {
 
         Player player = e.getEntity().getPlayer();
         UUID uuid = player.getUniqueId();
-        ConfigReader config = new ConfigReader();
 
 //        if (Vault.checkCurrency(uuid) < config.getKeepInventoryCosts()) {
 //            e.
@@ -34,14 +33,14 @@ public class KeepInventoryEvent implements Listener {
 //            @Override
 //            public void run() {
                 if (UserConfig.getUserConfig(uuid, "isKeepInventoryEnabled").equals("true")) {
-                    if (Vault.checkCurrency(uuid) < config.getKeepInventoryCosts()) {
+                    if (Vault.checkCurrency(uuid) < ConfigReader.getKeepInventoryCosts()) {
                         player.sendMessage(ChatColor.YELLOW + "[ki]虽然你启动了死亡不掉落保护，但是你的账户余额不足以让你优雅的死亡");
                     } else {
                         e.setKeepInventory(true);
                         e.setKeepLevel(true);
                         e.getDrops().clear();
                         player.sendMessage(ChatColor.GREEN + "[ki]死亡不掉落保护成功启动，你的物品没有丢失");
-                        Vault.subtractCurrency(uuid, config.getKeepInventoryCosts());
+                        Vault.subtractCurrency(uuid, ConfigReader.getKeepInventoryCosts());
                     }
                 }
 //            }

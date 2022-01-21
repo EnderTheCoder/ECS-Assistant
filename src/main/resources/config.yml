@@ -22,6 +22,8 @@ Distance.Fly: 80
 
 #飞行CD
 CD.Fly: 60
+#扫地CD
+CD.Clean: 300
 
 # Mysql功能区
 Mysql.Username: username

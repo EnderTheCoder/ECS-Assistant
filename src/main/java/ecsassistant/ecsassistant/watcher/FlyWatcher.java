@@ -63,6 +63,7 @@ public class FlyWatcher extends TimerTask {
         //判断用户是否超出飞行范围，有两个标准：1.若在同一世界按照距离计算2.若不再同一世界则判定为超出范围
         if (!startFlyingLocation.getWorld().equals(player.getLocation().getWorld()) || startFlyingLocation.distance(player.getLocation()) > ConfigReader.getDistance("Fly")) {
             setFlyOff();
+            FlyCommander.isFlying.put(player, false);
             getLogger().info("[flyx]User flied too far.");
             player.sendMessage(ChatColor.RED + "[flyx]你超出了飞行范围");
             this.cancel();

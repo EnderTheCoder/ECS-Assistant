@@ -1,0 +1,2 @@
+cp /media/ender/0D120A300D120A30/mc_dev/ECS-Assistant/target/ECS-Assistant-1.8-R0.1-SNAPSHOT.jar /media/ender/0D120A300D120A30/mcs/arclight-1.18.1-test-server/plugins/ECS-Assistant-1.8-R0.1-SNAPSHOT.jar
+/usr/lib/jvm/jdk-17/bin/java -jar /media/ender/0D120A300D120A30/mcs/arclight-1.18.1-test-server/arclight-forge-1.18.1-1.0.0.jar
