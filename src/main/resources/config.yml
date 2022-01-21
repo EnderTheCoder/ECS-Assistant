@@ -1,5 +1,5 @@
 #飞行价格（每秒计）
-FlyCostsPerSec: 10
+Costs.FlyPerSec: 10
 #飞行起步价
 FlyCostsStart: 1000
 #传送花费倍率（价格=距离*倍率）
@@ -14,8 +14,6 @@ Costs.PortalAnchor.Public: 1000
 Costs.PortalAnchor.Private: 300
 # 传送锚-商业锚价格
 Costs.PortalAnchor.Commercial: 1000
-# 超出飞行范围价格倍率
-Costs.OutOfFlyArea: 3
 
 #最大飞行距离
 Distance.Fly: 80
@@ -36,6 +34,6 @@ Mysql.DataBaseName: database
 PlayerDefaultConfig.isKeepInventoryEnabled: false
 
 # 传送锚设置
-PortalAnchor.MaxPerUser: 10
+Max.PortalAnchor: 5
 
 

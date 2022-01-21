@@ -2,6 +2,8 @@ package ecsassistant.ecsassistant.core.portalanchor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import ecsassistant.ecsassistant.config.ConfigReader;
 import ecsassistant.ecsassistant.data.PortalAnchor;
 import ecsassistant.ecsassistant.database.Mysql;
 import org.bukkit.Location;
@@ -10,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.*;
@@ -32,6 +34,26 @@ public class PortalAnchorCore {
         m.close();
 
         return false;
+    }
+
+    public static boolean isMax(Player player) {
+        Mysql m = new Mysql();
+        m.prepareSql("SELECT COUNT(*) FROM portal_anchors WHERE owner_uuid = ?");
+        m.setData(1, String.valueOf(player.getUniqueId()));
+        m.execute();
+        ResultSet resultSet = m.getResult();
+        int col;
+        try {
+            col = resultSet.getInt(1);
+            return col >= ConfigReader.getMax("PortalAnchor");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public static boolean isOwner(Player player, String name) {
+        return player.getName().equals(name);
     }
 
     public static String getOwner(String name) {
@@ -100,7 +122,7 @@ public class PortalAnchorCore {
             else {
                 JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
                 for (int i = 0; i < jsonArray.size(); i++) {
-                    portalAnchor.trustedPlayers[i] = jsonArray.getString(i);
+                    portalAnchor.trustedPlayers.set(i, jsonArray.getString(i));
                 }
             }
 
@@ -111,6 +133,7 @@ public class PortalAnchorCore {
 
         return portalAnchor;
     }
+
 
     public static PortalAnchor[] getAll() {
         PortalAnchor[] portalAnchors = new PortalAnchor[10000];
@@ -131,7 +154,7 @@ public class PortalAnchorCore {
                 else {
                     JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
                     for (int i = 0; i < jsonArray.size(); i++) {
-                        portalAnchors[counter].trustedPlayers[i] = jsonArray.getString(i);
+                        portalAnchors[counter].trustedPlayers.set(i, jsonArray.getString(i));
                     }
                 }
                 counter++;

@@ -6,9 +6,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class ConfigReader {
     static FileConfiguration config = ECSAssistant.instance.getConfig();
 
-    public static double getFlyCostsPerSec() {
-        return config.getInt("FlyCostsPerMin");
-    }
+//    public static double getFlyCostsPerSec() {
+//        return config.getInt("FlyCostsPerSec");
+//    }
 
     public static double getFlyCostsStart() {
         return config.getInt("FlyCostsStart");
@@ -43,5 +43,9 @@ public class ConfigReader {
 
     public static int getCD(String cdTag) {
         return config.getInt("CD." + cdTag);
+    }
+
+    public static int getMax(String maxTag) {
+        return config.getInt("Max." + maxTag);
     }
 }

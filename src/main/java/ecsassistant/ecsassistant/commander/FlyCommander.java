@@ -21,6 +21,7 @@ public class FlyCommander implements CommandExecutor {
     public static Map<Player, Boolean> isFlying = new HashMap<>();
     public static Map<Player, Timestamp> flyStartTime = new HashMap<>();
 
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -66,7 +67,7 @@ public class FlyCommander implements CommandExecutor {
         Timer t = new Timer();//启动飞行监视线程
         FlyWatcher w = new FlyWatcher();
         w.setUser(player);
-        t.schedule(w, 0, 1000);//最多飞行多少秒？
+        t.schedule(w, 1000, 1000);//最多飞行多少秒？
         return true;
 
 

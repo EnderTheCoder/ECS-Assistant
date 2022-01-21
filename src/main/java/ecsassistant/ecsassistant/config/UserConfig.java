@@ -13,15 +13,14 @@ public class UserConfig {
         String config;
 
         config = getConfigRaw(uuid);
-        ConfigReader configReader = new ConfigReader();
 
 
 
         JSONObject json = JSON.parseObject(config);
         String configValue = json.getString(tag);
         if (configValue == null) {
-            putUserConfig(uuid, tag, configReader.getPlayerDefaultConfig(tag));
-            return configReader.getPlayerDefaultConfig(tag);
+            putUserConfig(uuid, tag, ConfigReader.getPlayerDefaultConfig(tag));
+            return ConfigReader.getPlayerDefaultConfig(tag);
         }
         return configValue;
     }

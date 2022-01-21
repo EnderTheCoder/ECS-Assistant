@@ -7,8 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
 import java.util.TimerTask;
 
+import static ecsassistant.ecsassistant.commander.FlyCommander.flyStartTime;
 import static org.bukkit.Bukkit.getLogger;
 
 public class FlyWatcher extends TimerTask {
@@ -33,7 +35,10 @@ public class FlyWatcher extends TimerTask {
    }
 
 
-
+    //平面勾股定理
+    public double distance(double x, double z) {
+        return Math.pow(x * x + z * z, 0.5);
+    }
 
     public void run() {
 
@@ -48,7 +53,7 @@ public class FlyWatcher extends TimerTask {
         }
 
         //判断用户是否用光钱
-        if (ConfigReader.getFlyCostsPerSec() > Vault.checkCurrency(player.getUniqueId()))
+        if (ConfigReader.getCosts("FlyPerSec") > Vault.checkCurrency(player.getUniqueId()))
         {
             FlyCommander.isFlying.put(player, false);
 
@@ -61,7 +66,7 @@ public class FlyWatcher extends TimerTask {
         }
 
         //判断用户是否超出飞行范围，有两个标准：1.若在同一世界按照距离计算2.若不再同一世界则判定为超出范围
-        if (!startFlyingLocation.getWorld().equals(player.getLocation().getWorld()) || startFlyingLocation.distance(player.getLocation()) > ConfigReader.getDistance("Fly")) {
+        if (!startFlyingLocation.getWorld().equals(player.getLocation().getWorld()) || distance(player.getLocation().getX() - startFlyingLocation.getX(), player.getLocation().getZ() - startFlyingLocation.getZ()) > ConfigReader.getDistance("Fly")) {
             setFlyOff();
             FlyCommander.isFlying.put(player, false);
             getLogger().info("[flyx]User flied too far.");
@@ -85,13 +90,13 @@ public class FlyWatcher extends TimerTask {
             getLogger().info("[flyx]User started flying.");
             setFlyOn();
         }
-
+        flyStartTime.put(player, new Timestamp(System.currentTimeMillis()));//录入飞行时间戳
         //每秒钟扣钱
-        Vault.subtractCurrency(player.getUniqueId(), ConfigReader.getFlyCostsPerSec());
+        Vault.subtractCurrency(player.getUniqueId(), ConfigReader.getCosts("FlyPerSec"));
 
-        counter++;
+        this.counter++;
         //每60秒钟提醒用户一次计费
-        if (counter % 60 == 0)
-            player.sendMessage(ChatColor.AQUA + String.format("[flyx]您已累计飞行 %s 分钟，共消耗您的账号余额 %s", counter / 60, counter * ConfigReader.getFlyCostsPerSec() + ConfigReader.getFlyCostsStart()));
+        if (this.counter % 60 == 0)
+            player.sendMessage(ChatColor.AQUA + String.format("[flyx]您已累计飞行 %s 分钟，共消耗您的账号余额 %s", this.counter / 60, this.counter * ConfigReader.getCosts("FlyPerSec") + ConfigReader.getFlyCostsStart()));
     }
 }

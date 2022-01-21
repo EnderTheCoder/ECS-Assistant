@@ -38,6 +38,10 @@ public class PortalAnchorCommander implements CommandExecutor {
                     sender.sendMessage(ChatColor.YELLOW + "[PortalAnchor]已经有一个名称为" + args[2] + "的传送锚存在，无法创建更多");
                     break;
                 }
+                if (PortalAnchorCore.isMax(player)) {
+                    sender.sendMessage(ChatColor.YELLOW + String.format("[PortalAnchor]你的传送锚数量已经达到上限%s个，请删除一部分再创建", ConfigReader.getMax("PortalAnchor")));
+                    break;
+                }
                 switch (args[1]) {
                     case "public": {
 
@@ -157,6 +161,15 @@ public class PortalAnchorCommander implements CommandExecutor {
                 }
                 break;
             }
+            case "trust": {
+                if (args.length != 3) return true;
+                if (!(PortalAnchorCore.isExists(args[2]) && PortalAnchorCore.getOwner(args[2]).equals(player.getName()))) {
+                    player.sendMessage("你输入的传送锚不存在或不属于你");
+                    return true;
+                }
+                break;
+            }
+
             case "list": {
 
                 PortalAnchor[] portalAnchors = PortalAnchorCore.getAll();

@@ -1,6 +1,8 @@
 package ecsassistant.ecsassistant.commander;
 
 import ecsassistant.ecsassistant.config.ConfigReader;
+import ecsassistant.ecsassistant.core.portalanchor.PortalAnchorCore;
+import ecsassistant.ecsassistant.data.PortalAnchor;
 import ecsassistant.ecsassistant.money.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getPlayer;
 
 //import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,9 +25,6 @@ public class AdminCommander implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            return false;
-        }
         Player player = (Player) sender;
         UUID uuid = player.getUniqueId();
 
@@ -37,6 +37,11 @@ public class AdminCommander implements CommandExecutor {
                 }
                 Vault.addVaultCurrency(targetPlayer.getUniqueId(), Double.parseDouble(args[2]));
                 sender.sendMessage(ChatColor.GREEN + String.format("成功增加账户余额 %s ", args[2]));
+                break;
+            }
+            case "test": {
+                PortalAnchor p = PortalAnchorCore.get("home_e");
+                getLogger().info(p.trustedPlayers.get(0));
                 break;
             }
             default: {
