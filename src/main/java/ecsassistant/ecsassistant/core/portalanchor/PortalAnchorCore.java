@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.*;
@@ -25,9 +24,7 @@ public class PortalAnchorCore {
         m.execute();
         ResultSet resultSet = m.getResult();
         try {
-            resultSet.next();
-
-            return !(resultSet.getString("name") == null);
+            return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,14 +35,15 @@ public class PortalAnchorCore {
 
     public static boolean isMax(Player player) {
         Mysql m = new Mysql();
-        m.prepareSql("SELECT COUNT(*) FROM portal_anchors WHERE owner_uuid = ?");
+        m.prepareSql("SELECT owner_uuid FROM portal_anchors WHERE owner_uuid = ?");
         m.setData(1, String.valueOf(player.getUniqueId()));
         m.execute();
         ResultSet resultSet = m.getResult();
-        int col;
         try {
-            col = resultSet.getInt(1);
-            return col >= ConfigReader.getMax("PortalAnchor");
+            int row = 0;
+            while (resultSet.next()) row++;
+
+            return row >= ConfigReader.getMax("PortalAnchor");
         } catch (SQLException e) {
             e.printStackTrace();
             return true;
@@ -53,7 +51,7 @@ public class PortalAnchorCore {
     }
 
     public static boolean isOwner(Player player, String name) {
-        return player.getName().equals(name);
+        return player.getName().equals(getOwner(name));
     }
 
     public static String getOwner(String name) {
@@ -62,11 +60,10 @@ public class PortalAnchorCore {
         m.setData(1, name);
         m.execute();
         ResultSet resultSet = m.getResult();
-//        if (resultSet.getRow() == 0) return null;
         OfflinePlayer player = null;
         try {
-            resultSet.next();
-            player = getOfflinePlayer(UUID.fromString(resultSet.getString("owner_uuid")));
+            if (resultSet.next()) player = getOfflinePlayer(UUID.fromString(resultSet.getString("owner_uuid")));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,14 +115,14 @@ public class PortalAnchorCore {
             portalAnchor.owner = getOfflinePlayer(UUID.fromString(resultSet.getString("owner_uuid")));
             portalAnchor.location = new Location(getWorld(resultSet.getString("world")), Double.parseDouble(resultSet.getString("x")), Double.parseDouble(resultSet.getString("y")), Double.parseDouble(resultSet.getString("z")));
             portalAnchor.costs = resultSet.getDouble("teleport_costs");
-            if (resultSet.getString("players_to_be_trusted").equals("{}")) portalAnchor.trustedPlayers = null;
-            else {
-                JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    portalAnchor.trustedPlayers.set(i, jsonArray.getString(i));
-                }
-            }
-
+//            if (resultSet.getString("players_to_be_trusted").equals("{}")) portalAnchor.trustedPlayers = null;
+//            else {
+//                JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
+//                for (int i = 0; i < jsonArray.size(); i++) {
+//                    portalAnchor.trustedPlayers.set(i, jsonArray.getString(i));
+//                }
+//            }
+            portalAnchor.trustedPlayers = null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -150,13 +147,14 @@ public class PortalAnchorCore {
                 portalAnchors[counter].owner = getOfflinePlayer(UUID.fromString(resultSet.getString("owner_uuid")));
                 portalAnchors[counter].location = new Location(getWorld(resultSet.getString("world")), Double.parseDouble(resultSet.getString("x")), Double.parseDouble(resultSet.getString("y")), Double.parseDouble(resultSet.getString("z")));
                 portalAnchors[counter].costs = resultSet.getDouble("teleport_costs");
-                if (resultSet.getString("players_to_be_trusted").equals("{}")) portalAnchors[counter].trustedPlayers = null;
-                else {
-                    JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        portalAnchors[counter].trustedPlayers.set(i, jsonArray.getString(i));
-                    }
-                }
+//                if (resultSet.getString("players_to_be_trusted").equals("{}")) portalAnchors[counter].trustedPlayers = null;
+//                else {
+//                    JSONArray jsonArray = JSON.parseArray(resultSet.getString("players_to_be_trusted"));
+//                    for (int i = 0; i < jsonArray.size(); i++) {
+//                        portalAnchors[counter].trustedPlayers.set(i, jsonArray.getString(i));
+//                    }
+//                }
+                portalAnchors[counter].trustedPlayers = null;
                 counter++;
             }
         } catch (SQLException e) {
